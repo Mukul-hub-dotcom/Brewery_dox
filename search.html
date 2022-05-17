@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Here</title>
+    <style>
+        nav{
+            background-color: aqua;
+            display: flex;
+            justify-content: space-evenly;
+        }
+        #show>div{
+        border: 1px solid black;
+        margin-top: 20px;
+        display:flex;
+        justify-content: space-between;
+    }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="1.html">Main Page</a>
+        <a href="search.html">Search Page</a>
+    </nav>
+    <label>Search bre</label>
+    <input type="text" id="q">
+    <button onclick="getclick()">search</button>
+    <div id="show"></div>
+    <div id="sug"></div>
+</body>
+<script>
+    
+    
+    async function sai(){
+        x=document.getElementById("q").value
+        url=`https://api.openbrewerydb.org/breweries/search?query=${x}&per_page=4`
+        try{
+            data=await fetch(url)
+            .then((x)=>x.json())
+            .then((y)=>s(y))
+        }
+        catch(err){
+            console.log(err)
+        }
+
+    }
+    function s(y){
+    var phels=document.querySelectorAll('.se')
+        console.log(phels)
+        phels.forEach(i=>i.remove())
+    ol=document.createElement('ul')
+    ol.className='se'
+    y.forEach((e)=>{
+         li=document.createElement('li')
+         li.innerHTML=e.name
+         ol.append(li)
+    })
+    document.getElementById('sug').append(ol)
+}
+    async function getclick(){
+        x=document.getElementById("q").value
+        url=`https://api.openbrewerydb.org/breweries/search?query=${x}&per_page=10`
+        try{
+        data=await fetch(url)
+        .then((x)=>x.json())
+        .then((y)=>displaylist(y))
+        }
+        catch(err){
+            console.log(err)
+        }
+
+    }
+
+    
+    
+function displaylist(x){
+        var phels=document.querySelectorAll('.se')
+        console.log(phels)
+        phels.forEach(i=>i.remove())
+        console.log(x)
+        var phels=document.querySelectorAll('.ja')
+        console.log(phels)
+        phels.forEach(i=>i.remove())
+        x.forEach(element => {
+            // console.log(element)
+var div=document.createElement("div")
+div.className='ja'
+div.innerHTML=`
+<h2>${element.name}</h2>
+<h2>${element.brewery_type}</h2>
+<h2>${element.city}</h2>
+<h2>${element.state}</h2>` 
+
+
+button=document.createElement('button')
+button.innerHTML="More Deteals"
+button.class='mo'
+button.addEventListener('click',()=>{
+    localStorage.setItem('id',element.name)
+    window.location.href='./det.html'
+})
+div.appendChild(button)
+document.getElementById("show").append(div)      
+});
+if(x.length==0){
+    h=document.createElement('h1')
+    h.innerHTML="Not found try other keyword"
+    document.getElementById("show").append(h)      
+}
+    }
+</script>
+</html>
